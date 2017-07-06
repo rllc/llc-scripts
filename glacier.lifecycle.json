@@ -1,0 +1,15 @@
+{
+    "Rules": [
+        {
+            "ID": "Move to glacier after 3 years",
+            "Prefix": "",
+            "Status": "Enabled",
+            "Transitions": [
+              {
+                  "Days": 1000,
+                  "StorageClass": "GLACIER"
+              }
+            ]
+        }
+    ]
+}

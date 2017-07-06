@@ -10,8 +10,8 @@ bucket="$name"-archives
 
 # TODO : determine if account already exists, delete and recreate?
 
-readWritePolicy="{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"s3ReadWritePolicy\",\"Effect\":\"Allow\",\"Action\":[\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListAllMyBuckets\",\"s3:ListBucket\",\"s3:PutObject\",\"s3:ListBucketMultipartUploads\",\"s3:ListMultipartUploadParts\",\"s3:AbortMultipartUpload\"],\"Resource\":[\"arn:aws:s3:::$name-archives\",\"arn:aws:s3:::$name-archives/*\",\"arn:aws:s3:::$name-archives-old\",\"arn:aws:s3:::$name-archives-old/*\"]}]}"
-readOnlyPolicy="{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"s3ReadOnlyPolicy\",\"Effect\":\"Allow\",\"Action\":[\"s3:GetBucketLocation\",\"s3:GetObject\",\"s3:GetObjectVersion\",\"s3:ListAllMyBuckets\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\",\"s3:ListBucketVersions\",\"s3:ListMultipartUploadParts\"],\"Resource\":[\"arn:aws:s3:::$name-archives\",\"arn:aws:s3:::$name-archives/*\",\"arn:aws:s3:::$name-archives-old\",\"arn:aws:s3:::$name-archives-old/*\"]}]}"
+readWritePolicy="{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"s3ReadWritePolicy\",\"Effect\":\"Allow\",\"Action\":[\"s3:DeleteObject\",\"s3:GetObject\",\"s3:ListAllMyBuckets\",\"s3:ListBucket\",\"s3:PutObject\",\"s3:ListBucketMultipartUploads\",\"s3:ListMultipartUploadParts\",\"s3:AbortMultipartUpload\"],\"Resource\":[\"arn:aws:s3:::$name-archives\",\"arn:aws:s3:::$name-archives/*\"]}]}"
+readOnlyPolicy="{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"s3ReadOnlyPolicy\",\"Effect\":\"Allow\",\"Action\":[\"s3:GetBucketLocation\",\"s3:GetObject\",\"s3:GetObjectVersion\",\"s3:ListAllMyBuckets\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\",\"s3:ListBucketVersions\",\"s3:ListMultipartUploadParts\"],\"Resource\":[\"arn:aws:s3:::$name-archives\",\"arn:aws:s3:::$name-archives/*\"]}]}"
 
 generateBucket() {
   bucketname="$1"
@@ -40,6 +40,7 @@ generateUser() {
 }
 
 generateBucket "$name"-archives
-generateBucket "$name"-archives-old
 generateUser "$name-read-write" "s3ReadWritePolicy" "$readWritePolicy"
 generateUser "$name-read-only" "s3ReadOnlyPolicy" "$readOnlyPolicy"
+
+aws s3api put-bucket-lifecycle-configuration --bucket "$name"-archives --lifecycle-configuration file://glacier.lifecycle.json
